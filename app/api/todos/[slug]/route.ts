@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { fetchATodo } from "@/data/firestore";
 
 export async function GET(
   request: NextRequest,
@@ -9,14 +10,16 @@ export async function GET(
   const query = searchParams.get("query");
   // URL -> `/dashboard?search=my-project`
   // `search` -> 'my-project'
+  console.log(params.slug);
+  const fetchedTodo = await fetchATodo(params.slug);
+
+  if (!fetchedTodo) {
+    return new Response(null, { status: 204 });
+  }
+
   const response = {
     message: "특정 할 일 가져오기",
-    data: {
-      id: params.slug,
-      title: "ㅇㅇ",
-      isDone: false,
-      query,
-    },
+    data: fetchedTodo,
   };
 
   return NextResponse.json(response, { status: 200 });

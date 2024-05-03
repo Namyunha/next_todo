@@ -26,6 +26,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// 모든 할 일 가져오기
+
 export async function fetchTodos() {
   const querySnapshot = await getDocs(collection(db, "todos"));
 
@@ -34,7 +36,7 @@ export async function fetchTodos() {
   }
 
   // 모든 할 일 가져오기
-  const fetchedTodos = [] as any;
+  const fetchedTodos = [];
 
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
@@ -51,7 +53,9 @@ export async function fetchTodos() {
   return fetchedTodos;
 }
 
-export async function addTodos({ title }: { title: string }) {
+// 할 일 추가
+
+export async function addTodos({ title }) {
   // Add a new document with a generated id
   const newTodoRef = doc(collection(db, "todos"));
 
@@ -67,4 +71,28 @@ export async function addTodos({ title }: { title: string }) {
   await setDoc(newTodoRef, newTodoData);
 
   return newTodoData;
+}
+
+export async function fetchATodo(id) {
+  console.log("id - ", id);
+  if (!id) {
+    return null;
+  }
+  const todoDocRef = doc(db, "todos", id);
+  const todoDocSnap = await getDoc(todoDocRef);
+
+  if (todoDocSnap.exists()) {
+    console.log("Document data:", todoDocSnap.data());
+    const fetchedATodo = {
+      id: todoDocSnap.id,
+      title: todoDocSnap.data()["title"],
+      is_done: todoDocSnap.data()["is_done"],
+      creataed_at: todoDocSnap.data()["created_at"].toDate(),
+    };
+
+    return fetchedATodo;
+  } else {
+    console.log("No such document!");
+    return null;
+  }
 }
