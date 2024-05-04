@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchATodo } from "@/data/firestore";
+import { deleteTodo } from "@/data/firestore";
 
 export async function GET(
   request: NextRequest,
@@ -29,13 +30,13 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
+  const deletedTodo = await deleteTodo(params.slug);
+
+  if (!deletedTodo) return new Response(null, { status: 204 });
+
   const response = {
     message: "특정 할 일 삭제하기",
-    data: {
-      id: params.slug,
-      title: "오늘도 빡코딩!",
-      isDone: false,
-    },
+    data: deletedTodo,
   };
 
   return NextResponse.json(response, { status: 200 });

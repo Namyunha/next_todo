@@ -7,6 +7,7 @@ import {
   getDoc,
   doc,
   setDoc,
+  deleteDoc,
   Timestamp,
 } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -65,34 +66,43 @@ export async function addTodos({ title }) {
     id: newTodoRef.id,
     title: title,
     is_done: false,
-    creataed_at: createdAtTimestamp,
+    created_at: createdAtTimestamp,
   };
-  // later...
+
   await setDoc(newTodoRef, newTodoData);
 
-  return newTodoData;
+  return {
+    id: newTodoRef.id,
+    title: title,
+    is_done: false,
+    creataed_at: createdAtTimestamp.toDate(),
+  };
 }
 
 export async function fetchATodo(id) {
-  console.log("id - ", id);
-  if (!id) {
-    return null;
-  }
+  if (!id) return null;
   const todoDocRef = doc(db, "todos", id);
   const todoDocSnap = await getDoc(todoDocRef);
-
   if (todoDocSnap.exists()) {
-    console.log("Document data:", todoDocSnap.data());
     const fetchedATodo = {
       id: todoDocSnap.id,
       title: todoDocSnap.data()["title"],
       is_done: todoDocSnap.data()["is_done"],
       creataed_at: todoDocSnap.data()["created_at"].toDate(),
     };
-
     return fetchedATodo;
   } else {
     console.log("No such document!");
     return null;
+  }
+}
+
+export async function deleteTodo(id) {
+  const searchedTodo = await fetchATodo(id);
+  if (!searchedTodo) {
+    return null;
+  } else {
+    await deleteDoc(doc(db, "todos", id));
+    return searchedTodo;
   }
 }
