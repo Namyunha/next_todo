@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchATodo } from "@/data/firestore";
-import { deleteTodo } from "@/data/firestore";
+import { fetchATodo, deleteTodo, updateTodo } from "@/data/firestore";
 
 export async function GET(
   request: NextRequest,
@@ -47,17 +46,22 @@ export async function PATCH(
   { params }: { params: { slug: string } }
 ) {
   const { title, is_done } = await request.json();
-
   const editedTodo = {
     id: params.slug,
     title,
     is_done,
   };
 
-  const response = {
-    message: "특정 할 일 수정 성공",
-    data: editedTodo,
-  };
-
-  return NextResponse.json(response, { status: 200 });
+  return !(await updateTodo(editedTodo))
+    ? NextResponse.json(
+        { message: "수정할 할 일을 찾을 수 없음" },
+        { status: 202 }
+      )
+    : NextResponse.json(
+        {
+          message: "특정 할 일 수정 성공",
+          data: editedTodo,
+        },
+        { status: 200 }
+      );
 }

@@ -8,6 +8,7 @@ import {
   doc,
   setDoc,
   deleteDoc,
+  updateDoc,
   Timestamp,
 } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -105,4 +106,16 @@ export async function deleteTodo(id) {
     await deleteDoc(doc(db, "todos", id));
     return searchedTodo;
   }
+}
+
+export async function updateTodo(editedTodo) {
+  const searchedTodo = await fetchATodo(editedTodo.id);
+  if (!searchedTodo) return null;
+  const washingtonRef = doc(db, "todos", editedTodo.id);
+  await updateDoc(washingtonRef, {
+    title: editedTodo.title,
+    is_done: editedTodo.is_done,
+  });
+
+  return editedTodo;
 }
