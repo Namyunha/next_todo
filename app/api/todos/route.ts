@@ -18,12 +18,21 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const { title } = await request.json();
 
+  if (!title) {
+    return Response.json(
+      {
+        message: "할 일을 입력해주세요",
+      },
+      { status: 422 }
+    );
+  }
+
   const addTodo = addTodos({ title });
-
-  const response = {
-    message: "할 일 추가 성공!",
-    data: addTodo,
-  };
-
-  return Response.json(response, { status: 201 });
+  return Response.json(
+    {
+      message: "할 일 추가 성공!",
+      data: addTodo,
+    },
+    { status: 201 }
+  );
 }
