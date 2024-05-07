@@ -5,14 +5,25 @@ import { Button } from "@nextui-org/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 
 export default function InputArea() {
+  const [clickAbled, setClickAbled] = useState(true);
   const [newTodoInputValue, setNewTodoInputValue] = useState("");
-  console.log(newTodoInputValue);
+  let alertTimer: NodeJS.Timeout;
+  const onInputHandler = (word: string) => {
+    clearTimeout(alertTimer);
+    setClickAbled(false);
+    alertTimer = setTimeout(() => {
+      setClickAbled(true);
+      console.log("word = ", word);
+      setNewTodoInputValue(word);
+    }, 1000);
+  };
   return (
     <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-      <Input onValueChange={setNewTodoInputValue} label="새로운 할 일" />
+      <Input onValueChange={onInputHandler} label="새로운 할 일" />
       <Popover placement="top" offset={20} showArrow>
         <PopoverTrigger>
           <Button
+            isDisabled={!clickAbled}
             className="h-14"
             color={newTodoInputValue.length > 0 ? "warning" : "default"}
           >
