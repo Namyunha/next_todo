@@ -4,7 +4,10 @@ import { Todo } from "@/types";
 import InputArea from "@/components/Todos/InputArea";
 
 export default async function TodosPage() {
-  const todos = await (await fetch(`${process.env.BASE_URL}/api/todos`)).json();
+  const todos = await (
+    await fetch(`${process.env.BASE_URL}/api/todos`, { cache: "no-store" })
+  ).json();
+
   const todoList: Todo[] = todos.data;
   console.log("todoList = ", todoList);
   return (
