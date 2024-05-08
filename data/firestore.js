@@ -10,6 +10,8 @@ import {
   deleteDoc,
   updateDoc,
   Timestamp,
+  query,
+  orderBy,
 } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -31,7 +33,10 @@ const db = getFirestore(app);
 // 모든 할 일 가져오기
 
 export async function fetchTodos() {
-  const querySnapshot = await getDocs(collection(db, "todos"));
+  const todosRef = collection(db, "todos");
+  const descQuery = query(todosRef, orderBy("created_at", "desc"));
+
+  const querySnapshot = await getDocs(descQuery);
 
   if (querySnapshot.empty) {
     return [];
