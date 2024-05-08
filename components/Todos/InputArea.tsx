@@ -1,16 +1,19 @@
 "use client";
-import { Input } from "@nextui-org/input";
-import { useState } from "react";
-
+import { useState, useRef } from "react";
 import { Button } from "@nextui-org/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
   Spinner,
+  Input,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
