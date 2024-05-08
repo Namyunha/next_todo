@@ -1,6 +1,7 @@
 "use client";
 import { Input } from "@nextui-org/input";
-import { RefObject, useState } from "react";
+import { useState } from "react";
+
 import { Button } from "@nextui-org/button";
 import {
   Popover,
@@ -10,6 +11,9 @@ import {
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function InputArea() {
   const router = useRouter();
@@ -51,12 +55,28 @@ export default function InputArea() {
       inputRef.current.value = "";
     }
     if (response) {
+      notify("할 일이 추가되었습니다.");
       setIsLoading(false);
       router.refresh();
     }
   };
+
+  const notify = (data: string) => toast.success(data);
+
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
         <Input
           ref={inputRef}
@@ -84,7 +104,8 @@ export default function InputArea() {
           )}
         </Popover>
       </div>
-      <div className="flex gap-4 justify-center h-5">
+
+      <div className="flex gap-4 justify-center h-3">
         {isLoading && <Spinner size="sm" color="warning" />}
       </div>
     </>
