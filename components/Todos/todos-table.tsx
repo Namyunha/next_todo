@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import {
   Table,
@@ -14,11 +13,6 @@ import {
   DropdownItem,
   DropdownMenu,
   useDisclosure,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
 } from "@nextui-org/react";
 import { Todo } from "@/types";
 import { VerticalDotsIcon } from "./VerticalDotsIcon";
@@ -30,61 +24,14 @@ const TodosTable = ({ todos }: { todos: Todo[] }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [currentModalState, setCurrentModalState] =
     useState<FocusedTodoType | null>(null);
-  console.log("currentModalState = ", currentModalState);
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                {currentModalState?.modalType}
-              </ModalHeader>
-              <ModalBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="light"
-                  onPress={() => {
-                    setCurrentModalState(null);
-                    onClose();
-                  }}
-                >
-                  Close
-                </Button>
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    setCurrentModalState(null);
-                    onClose();
-                  }}
-                >
-                  Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <OptModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        currentModalState={currentModalState}
+        setCurrentModalState={setCurrentModalState}
+      />
       <Table aria-label="Example static collection table">
         <TableHeader>
           <TableColumn className="text-center">ID</TableColumn>
@@ -130,7 +77,7 @@ const TodosTable = ({ todos }: { todos: Todo[] }) => {
                         }}
                       >
                         <DropdownItem key="detail">상세보기</DropdownItem>
-                        <DropdownItem key="update">수정</DropdownItem>
+                        <DropdownItem key="edit">수정</DropdownItem>
                         <DropdownItem key="delete">삭제</DropdownItem>
                       </DropdownMenu>
                     </Dropdown>

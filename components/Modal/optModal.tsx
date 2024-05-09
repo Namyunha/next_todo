@@ -6,47 +6,69 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
 } from "@nextui-org/react";
 
-export default function OptModal() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+import {
+  editBodyContent,
+  deleteBodyContent,
+  detailBodyContent,
+} from "./modalContent";
+
+export default function OptModal({
+  isOpen,
+  onOpenChange,
+  currentModalState,
+  setCurrentModalState,
+}: any) {
+  let modalTitle: string;
+  let modalBodyContent;
+
+  switch (currentModalState?.modalType) {
+    case "detail":
+      modalTitle = "자세히보기";
+      modalBodyContent = detailBodyContent(currentModalState.focusedTodo);
+      break;
+    case "edit":
+      modalTitle = "수정하기";
+      modalBodyContent = editBodyContent();
+      break;
+    case "delete":
+      modalTitle = "삭제하기";
+      modalBodyContent = deleteBodyContent();
+      break;
+    default:
+      modalTitle = "";
+      modalBodyContent = <div></div>;
+  }
 
   return (
     <>
-      {/* <Button onPress={onOpen}>Open Modal</Button> */}
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Modal Title
+                {modalTitle}
               </ModalHeader>
-              <ModalBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </ModalBody>
+              <ModalBody>{modalBodyContent}</ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={() => {
+                    setCurrentModalState(null);
+                    onClose();
+                  }}
+                >
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    setCurrentModalState(null);
+                    onClose();
+                  }}
+                >
                   Action
                 </Button>
               </ModalFooter>
