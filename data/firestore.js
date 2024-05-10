@@ -13,6 +13,7 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
   authDomain: process.env.AUTH_DOMAIN,

@@ -1,8 +1,9 @@
 import { FocusedTodoType, Todo } from "@/types";
 import { Button, ModalFooter } from "@nextui-org/react";
 import { Dispatch, SetStateAction } from "react";
+import { useRouter } from "next/navigation";
 
-const detailFooter = ({
+function DetailFooter({
   setCurrentModalState,
   onClose,
   modalTitle,
@@ -12,7 +13,30 @@ const detailFooter = ({
   onClose: () => void;
   modalTitle: string;
   editedState: Todo | null | undefined;
-}) => {
+}) {
+  const router = useRouter();
+  const onEditHandler = async () => {
+    await fetch(`http://localhost:3000/api/todos/${editedState?.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify(editedState),
+    });
+    router.refresh();
+    setCurrentModalState(null);
+    onClose();
+  };
+
+  const onDeleteHandler = async () => {
+    await fetch(`http://localhost:3000/api/todos/${editedState?.id}`, {
+      method: "DELETE",
+    });
+    router.refresh();
+    setCurrentModalState(null);
+    onClose();
+  };
+
   return (
     <>
       <Button
@@ -26,31 +50,17 @@ const detailFooter = ({
         닫기
       </Button>
       {modalTitle === "수정하기" ? (
-        <Button
-          color="primary"
-          onPress={() => {
-            setCurrentModalState(null);
-            console.log("Edit Todo = ", editedState);
-            onClose();
-          }}
-        >
+        <Button color="primary" onPress={onEditHandler}>
           수정하기
         </Button>
       ) : modalTitle === "삭제하기" ? (
-        <Button
-          color="primary"
-          onPress={() => {
-            setCurrentModalState(null);
-            console.log("Delete Todo = ", editedState);
-            onClose();
-          }}
-        >
+        <Button color="primary" onPress={onDeleteHandler}>
           삭제하기
         </Button>
       ) : null}
     </>
   );
-};
+}
 
 export const ComponentFooter = ({
   setCurrentModalState,
@@ -65,7 +75,7 @@ export const ComponentFooter = ({
 }) => {
   return (
     <ModalFooter>
-      {detailFooter({ setCurrentModalState, onClose, modalTitle, editedState })}
+      {DetailFooter({ setCurrentModalState, onClose, modalTitle, editedState })}
     </ModalFooter>
   );
 };
