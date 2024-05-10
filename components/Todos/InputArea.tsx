@@ -7,11 +7,6 @@ import {
   PopoverTrigger,
   Spinner,
   Input,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 

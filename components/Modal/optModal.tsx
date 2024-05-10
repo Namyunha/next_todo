@@ -1,44 +1,54 @@
-import React from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
+import { Modal, ModalContent, ModalHeader } from "@nextui-org/react";
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-} from "@nextui-org/react";
-
-import {
+  detailBodyContent,
   editBodyContent,
   deleteBodyContent,
-  detailBodyContent,
 } from "./modalContent";
+import { FocusedTodoType } from "@/types";
+import { ComponentFooter } from "./Footer";
+import { useState } from "react";
+import { Todo } from "@/types";
 
 export default function OptModal({
   isOpen,
   onOpenChange,
   currentModalState,
   setCurrentModalState,
-}: any) {
+}: {
+  isOpen: boolean;
+  onOpenChange: () => void;
+  currentModalState: null | FocusedTodoType;
+  setCurrentModalState: Dispatch<SetStateAction<FocusedTodoType | null>>;
+}) {
   let modalTitle: string;
-  let modalBodyContent;
+  let modalBody;
+  const [editedState, setEditedState] = useState<Todo | null | undefined>(
+    currentModalState?.focusedTodo
+  );
+
+  useEffect(() => {
+    setEditedState(currentModalState?.focusedTodo);
+  }, [currentModalState?.focusedTodo]);
+
+  console.log("editedState = ", editedState);
 
   switch (currentModalState?.modalType) {
     case "detail":
       modalTitle = "자세히보기";
-      modalBodyContent = detailBodyContent(currentModalState.focusedTodo);
+      modalBody = detailBodyContent(currentModalState.focusedTodo);
       break;
     case "edit":
       modalTitle = "수정하기";
-      modalBodyContent = editBodyContent();
+      modalBody = editBodyContent({ editedState, setEditedState });
       break;
     case "delete":
       modalTitle = "삭제하기";
-      modalBodyContent = deleteBodyContent();
+      modalBody = deleteBodyContent(currentModalState.focusedTodo);
       break;
     default:
       modalTitle = "";
-      modalBodyContent = <div></div>;
+      modalBody = <div></div>;
   }
 
   return (
@@ -50,28 +60,13 @@ export default function OptModal({
               <ModalHeader className="flex flex-col gap-1">
                 {modalTitle}
               </ModalHeader>
-              <ModalBody>{modalBodyContent}</ModalBody>
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="light"
-                  onPress={() => {
-                    setCurrentModalState(null);
-                    onClose();
-                  }}
-                >
-                  Close
-                </Button>
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    setCurrentModalState(null);
-                    onClose();
-                  }}
-                >
-                  Action
-                </Button>
-              </ModalFooter>
+              {modalBody}
+              <ComponentFooter
+                setCurrentModalState={setCurrentModalState}
+                onClose={onClose}
+                modalTitle={modalTitle}
+                editedState={editedState}
+              />
             </>
           )}
         </ModalContent>

@@ -13,10 +13,6 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
   authDomain: process.env.AUTH_DOMAIN,
@@ -31,7 +27,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 모든 할 일 가져오기
-
 export async function fetchTodos() {
   const todosRef = collection(db, "todos");
   const descQuery = query(todosRef, orderBy("created_at", "desc"));
